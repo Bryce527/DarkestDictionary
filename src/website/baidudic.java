@@ -20,6 +20,14 @@ public class baidudic {
 		System.out.println(meaning);
 
 	}
+	
+	public String lookup(String word) {
+		System.out.println("Enter the word");
+		String requestUrl = "http://dict.baidu.com/s?wd=" + word + "&device=pc&from=home&q=";
+		String web_data = httpRequest(requestUrl);
+		String meaning = MatchMeaning(web_data);
+		return meaning;
+	}
 
 	private static String httpRequest(String requestUrl) {
         StringBuffer buffer = null;  

@@ -12,12 +12,19 @@ public class bingdic {
 		Scanner input =new Scanner(System.in);
 		System.out.println("Enter the word");
 		String word = input.nextLine();
-//		String requestUrl = "http://dict.youdao.com/w/eng/" + word + "/#keyfrom=dict2.index.suggest";
 		String requestUrl = "http://cn.bing.com/dict/search?q=" + word + "&qs=n&form=Z9LH5&pq=and&sc=7-3&sp=-1&sk=&cvid=BED3FF15792F454BAC1FB47BA0311957";
 		String web_data = httpRequest(requestUrl);
 		String meaning = MatchMeaning(web_data);
 		System.out.println(meaning);
 
+	}
+	
+	public String lookup(String word) {
+		System.out.println("Enter the word");
+		String requestUrl = "http://cn.bing.com/dict/search?q=" + word + "&qs=n&form=Z9LH5&pq=and&sc=7-3&sp=-1&sk=&cvid=BED3FF15792F454BAC1FB47BA0311957";
+		String web_data = httpRequest(requestUrl);
+		String meaning = MatchMeaning(web_data);
+		return meaning;
 	}
 
 	private static String httpRequest(String requestUrl) {

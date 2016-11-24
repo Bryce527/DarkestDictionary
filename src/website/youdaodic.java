@@ -18,6 +18,15 @@ public class youdaodic {
 		System.out.println(meaning);
 
 	}
+	
+	public String lookup(String word) {
+		System.out.println("Enter the word");
+		String requestUrl = "http://dict.youdao.com/w/eng/" + word + "/#keyfrom=dict2.index.suggest";
+		String web_data = httpRequest(requestUrl);
+		String meaning = MatchMeaning(web_data);
+		System.out.println(meaning);
+		return meaning;
+	}
 
 	private static String httpRequest(String requestUrl) {
         StringBuffer buffer = null;  
