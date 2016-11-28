@@ -32,7 +32,7 @@ public class DataBase {
 		StringBuilder result = new StringBuilder();
         String[] sourceStrArray = request.split("@");	//请求按照@分割
 
-		if(request.charAt(0) == '0') {		//注册，用户名、密码
+		if(request.charAt(0) == '0') {		//登陆，用户名、密码
 		//形如 0@id@password
 			try {
 				return query_user_id_password(sourceStrArray[1], sourceStrArray[2]);
@@ -45,7 +45,7 @@ public class DataBase {
 				e.printStackTrace();
 			}
 		}
-		else if(request.charAt(0) == '1') {		//登陆，用户名、密码
+		else if(request.charAt(0) == '1') {		//注册，用户名、密码
 			try {
 				String res = query_user_id_password(sourceStrArray[1], sourceStrArray[2]);
 				if(res.equalsIgnoreCase("1") || res.equalsIgnoreCase("2"))

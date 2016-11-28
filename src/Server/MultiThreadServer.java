@@ -7,7 +7,8 @@ import javax.swing.*;
 
 public class MultiThreadServer extends JFrame{
 	private JTextArea jta = new JTextArea();
-	website.youdaodic dic = new website.youdaodic();
+	private website.youdaodic dic = new website.youdaodic();
+	private DataBase.DataBase database = new DataBase.DataBase();
 
 	public static void main(String[] args) {
 		new MultiThreadServer();
@@ -67,16 +68,22 @@ public class MultiThreadServer extends JFrame{
 				
 				while(true) {
 					//Recieve radius from the client
-					String word = inputFromClient.readUTF();
-					System.out.println(word + "server");
+					String request = inputFromClient.readUTF();
+					if(request.charAt(0) == '0') {		//µÇÂ½¡¢×¢²á
+						String[] requestArray = request.split("@", 2);
+						String r = database.queryFromClient(requestArray[1]);
+						outputToClient.writeUTF(r);
+					}
+					else if(request.charAt(0) == '1') {	//²éµ¥´Ê
+						String[] requestArray = request.split("@");
+						String meaning = dic.lookup(requestArray[3]);
+						outputToClient.writeUTF(meaning);
+					}
+					System.out.println(request + "server");
 					//Compute area
-					String meaning = dic.lookup(word);
+//					String meaning = dic.lookup(word);
 					
 					//Send area back to the client
-//					outputToClient.writeBytes(meaning);
-					outputToClient.writeUTF(meaning);
-//					jta.append("Radius received from client: " + radius + '\n');
-//					jta.append("Area found: " + meaning + '\n');
 				}
 			}
 			catch(IOException ex) {

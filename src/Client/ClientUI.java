@@ -140,11 +140,11 @@ public class ClientUI {
 				else
 					rTemp = rTemp + "0";
 				
-				String strSend = "@" + "2" + "@" + rTemp + "@" + word;
+				String strSend = "1" + "@" + "2" + "@" + rTemp + "@" + word;
 				
 				//result.setText(strSend);
 				try {
-					toServer.writeUTF(word);
+					toServer.writeUTF(strSend);
 					toServer.flush();
 					String strOutput = fromServer.readUTF();
 					result.setText(strOutput + '\n');
@@ -154,6 +154,7 @@ public class ClientUI {
 				}
 			}
 		}
+		
 		private class signInListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
 				signInFrame = new JFrame("sign in");
@@ -178,13 +179,14 @@ public class ClientUI {
 				signInFrame.setVisible(true);
 			}
 		}
+		
 		private class logInListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
 				String strAccount = accountInput.getText();
 				String strPassword = passwordInput.getText();
-				String strSend = "@" + "0" + "@" + strAccount + "@" + strPassword;
+				String strSend = "0" + "@" + "0" + "@" + strAccount + "@" + strPassword;
 				String logInResult = "";
-				/*try {
+				try {
 					toServer.writeUTF(strSend);
 					toServer.flush();
 					logInResult = fromServer.readUTF();
@@ -192,9 +194,9 @@ public class ClientUI {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}*/
+				}
 				//logInResult.compareTo("@suceed") == 0
-				if(false){
+				if(logInResult.equals("2")){
 					signInFrame.dispatchEvent(new WindowEvent(signInFrame,WindowEvent.WINDOW_CLOSING));
 				}
 				else{
@@ -207,14 +209,15 @@ public class ClientUI {
 				}
 			}
 		}
+		
 		private class signUpListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
 				String strAccount = accountInput.getText();
 				String strPassword = passwordInput.getText();
-				String strSend = "@" + "1" + "@" + strAccount + "@" + strPassword;
+				String strSend = "0" + "@" + "1" + "@" + strAccount + "@" + strPassword;
 				String signUpResult = "";
 				
-				/*try {
+				try {
 					toServer.writeUTF(strSend);
 					toServer.flush();
 					signUpResult = fromServer.readUTF();
@@ -222,12 +225,12 @@ public class ClientUI {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}*/
+				}
 				
-				if(false){
+				if(signUpResult.equals("1")){	//×¢²á³É¹¦
 					signInFrame.dispatchEvent(new WindowEvent(signInFrame,WindowEvent.WINDOW_CLOSING));
 				}
-				else{
+				else{		//×¢²áÊ§°Ü
 					JFrame msgWindow = new JFrame();
 					
 					msgWindow.setSize(300,200);
