@@ -62,10 +62,14 @@ public class ClientUI {
 			
 			//登陆，输入框，搜索按钮
 			JPanel p1 = new JPanel();
-			p1.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+/*			p1.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 			p1.add(signIn);
 			p1.add(searchContent);
-			p1.add(search);
+			p1.add(search);*/
+			p1.setLayout(new BorderLayout(0, 0));
+			p1.add(signIn, BorderLayout.WEST);
+			p1.add(searchContent, BorderLayout.CENTER);
+			p1.add(search, BorderLayout.EAST);
 			frame.add(p1, BorderLayout.NORTH);
 			
 			//选择使用的翻译以及点赞
@@ -100,8 +104,8 @@ public class ClientUI {
 			//p4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 			//p4.add(new JTextArea());
 			frame.add(result,BorderLayout.CENTER);
-			
-			frame.setSize(1024,960);
+			result.setFont(new Font("SansSerif", Font.BOLD, 16));
+			frame.setSize(800,600);
 			frame.setLocationRelativeTo(null);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
@@ -140,14 +144,20 @@ public class ClientUI {
 				else
 					rTemp = rTemp + "0";
 				
-				String strSend = "1" + "@" + "2" + "@" + rTemp + "@" + word;
+				String strSend = "1" + "@" + rTemp + "@" + word;
 				
 				//result.setText(strSend);
 				try {
 					toServer.writeUTF(strSend);
 					toServer.flush();
 					String strOutput = fromServer.readUTF();
-					result.setText(strOutput + '\n');
+					String[] outputArray = strOutput.split("@");
+					StringBuilder show = new StringBuilder();
+					for(int i = 0; i < outputArray.length; i ++) {
+						show.append(outputArray[i]);
+						show.append("\n\n");
+					}
+					result.setText(show.toString() + '\n');
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -200,12 +210,19 @@ public class ClientUI {
 					signInFrame.dispatchEvent(new WindowEvent(signInFrame,WindowEvent.WINDOW_CLOSING));
 				}
 				else{
-					JFrame msgWindow = new JFrame();
+/*					JFrame msgWindow = new JFrame();
 					
 					msgWindow.setSize(300,200);
 					msgWindow.setLocationRelativeTo(null);
 					msgWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					msgWindow.setVisible(true);
+					msgWindow.setVisible(true);*/
+					if(logInResult.equals("1")) {		//密码错误
+						JOptionPane.showMessageDialog(null, "密码错误");
+					}
+					else if(logInResult.equals("0")) {	//用户名不存在
+						JOptionPane.showMessageDialog(null, "用户名不存在");
+					}
+						
 				}
 			}
 		}
@@ -231,12 +248,13 @@ public class ClientUI {
 					signInFrame.dispatchEvent(new WindowEvent(signInFrame,WindowEvent.WINDOW_CLOSING));
 				}
 				else{		//注册失败
-					JFrame msgWindow = new JFrame();
+/*					JFrame msgWindow = new JFrame();
 					
 					msgWindow.setSize(300,200);
 					msgWindow.setLocationRelativeTo(null);
 					msgWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					msgWindow.setVisible(true);
+					msgWindow.setVisible(true);*/
+					JOptionPane.showMessageDialog(null, "用户名已存在");
 				}
 			}
 		}
@@ -245,7 +263,7 @@ public class ClientUI {
 				String strSend = "@3@Baidu";
 				String logInResult = "";
 				
-				try {
+/*				try {
 					toServer.writeUTF(strSend);
 					toServer.flush();
 					logInResult = fromServer.readUTF();
@@ -253,7 +271,7 @@ public class ClientUI {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+				}*/
 			}
 		}
 		private class upBingListener implements ActionListener{
@@ -261,7 +279,7 @@ public class ClientUI {
 				String strSend = "@3@Bing";
 				String logInResult = "";
 				
-				try {
+/*				try {
 					toServer.writeUTF(strSend);
 					toServer.flush();
 					logInResult = fromServer.readUTF();
@@ -269,7 +287,7 @@ public class ClientUI {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+				}*/
 			}
 		}
 		private class upYoudaoListener implements ActionListener{
@@ -277,7 +295,7 @@ public class ClientUI {
 				String strSend = "@3@Youdao";
 				String logInResult = "";
 				
-				try {
+/*				try {
 					toServer.writeUTF(strSend);
 					toServer.flush();
 					logInResult = fromServer.readUTF();
@@ -285,7 +303,7 @@ public class ClientUI {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+				}*/
 			}
 		}
 		private void Event(){

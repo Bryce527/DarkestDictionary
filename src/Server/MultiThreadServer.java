@@ -7,7 +7,11 @@ import javax.swing.*;
 
 public class MultiThreadServer extends JFrame{
 	private JTextArea jta = new JTextArea();
-	private website.youdaodic dic = new website.youdaodic();
+	
+	private website.youdaodic youdaodic = new website.youdaodic();
+	private website.bingdic bingdic = new website.bingdic();
+	private website.baidudic baidudic = new website.baidudic();
+	
 	private DataBase.DataBase database = new DataBase.DataBase();
 
 	public static void main(String[] args) {
@@ -69,6 +73,7 @@ public class MultiThreadServer extends JFrame{
 				while(true) {
 					//Recieve radius from the client
 					String request = inputFromClient.readUTF();
+					System.out.println("request" + request);
 					if(request.charAt(0) == '0') {		//µÇÂ½¡¢×¢²á
 						String[] requestArray = request.split("@", 2);
 						String r = database.queryFromClient(requestArray[1]);
@@ -76,7 +81,8 @@ public class MultiThreadServer extends JFrame{
 					}
 					else if(request.charAt(0) == '1') {	//²éµ¥´Ê
 						String[] requestArray = request.split("@");
-						String meaning = dic.lookup(requestArray[3]);
+//						String meaning = youdaodic.lookup(requestArray[3]);
+						String meaning = look_up_words(requestArray[1], requestArray[2]); 
 						outputToClient.writeUTF(meaning);
 					}
 					System.out.println(request + "server");
@@ -90,5 +96,24 @@ public class MultiThreadServer extends JFrame{
 				System.err.println(ex);
 			}
 		}
+	}
+	
+	public String look_up_words(String flag, String word) {
+		StringBuilder result = new StringBuilder();
+		if(flag.charAt(0) == '1') {		//baidudic
+			String temp = baidudic.lookup(word);
+			result.append(temp);
+			result.append("@");
+		}
+		if(flag.charAt(1) == '1') {		//youdaodic
+			String temp = youdaodic.lookup(word);
+			result.append(temp);
+			result.append("@");
+		}
+		if(flag.charAt(2) == '1') {		//bingdic
+			String temp = bingdic.lookup(word);
+			result.append(temp);
+		}
+		return result.toString();
 	}
 }

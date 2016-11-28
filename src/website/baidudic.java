@@ -13,9 +13,10 @@ public class baidudic {
 		Scanner input =new Scanner(System.in);
 		System.out.println("Enter the word");
 		String word = input.nextLine();
-//		String requestUrl = "http://dict.youdao.com/w/eng/" + word + "/#keyfrom=dict2.index.suggest";
-		String requestUrl = "http://dict.baidu.com/s?wd=" + word + "&device=pc&from=home&q=";
+//		String requestUrl = "http://dict.baidu.com/s?wd=" + word + "&device=pc&from=home&q=";
+		String requestUrl = "http://dict.baidu.com/s?wd=" + word + "&ptype=english";
 		String web_data = httpRequest(requestUrl);
+//		System.out.println(web_data);
 		String meaning = MatchMeaning(web_data);
 		System.out.println(meaning);
 
@@ -23,7 +24,7 @@ public class baidudic {
 	
 	public String lookup(String word) {
 		System.out.println("Enter the word");
-		String requestUrl = "http://dict.baidu.com/s?wd=" + word + "&device=pc&from=home&q=";
+		String requestUrl = "http://dict.baidu.com/s?wd=" + word + "&ptype=english";
 		String web_data = httpRequest(requestUrl);
 		String meaning = MatchMeaning(web_data);
 		return meaning;
@@ -88,14 +89,13 @@ public class baidudic {
 	}
 	
 	private static String MatchMeaning(String web_data) {
-//		Pattern searchMeanPattern = Pattern.compile("(?s)<div class=\"trans-container\">.*?<ul>.*?</div>");
 		Pattern searchMeanPattern = Pattern.compile("(?s)<div class=\"en-content\">.*?<ul>.*?</div>");
         Matcher m1 = searchMeanPattern.matcher(web_data); //m1是获取包含翻译的整个<div>的
         StringBuilder result = new StringBuilder();
         try {
             if (m1.find()) {
                 String means = m1.group();//所有解释，包含网页标签
-                Pattern getChinese = Pattern.compile("(?m)<span>(.*?)</span>"); //(?m)代表按行匹配
+                Pattern getChinese = Pattern.compile("(?m)</strong><span>(.*?)</span></p>"); //(?m)代表按行匹配
                 Matcher m2 = getChinese.matcher(means);
 
                 System.out.println("释义:");
