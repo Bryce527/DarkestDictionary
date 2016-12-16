@@ -94,6 +94,7 @@ public class youdaodic {
             if (m1.find()) {
                 String means = m1.group();//所有解释，包含网页标签
                 Pattern getChinese = Pattern.compile("(?m)<li>(.*?)</li>"); //(?m)代表按行匹配
+//                Pattern getChinese = Pattern.compile("(.)"); //(?m)代表按行匹配
                 Matcher m2 = getChinese.matcher(means);
 
                 System.out.println("释义:");

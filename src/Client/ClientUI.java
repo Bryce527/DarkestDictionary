@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 
+
 public class ClientUI {
 	public static void main(String[] arg){
 		UI ui = new UI();
@@ -15,8 +16,12 @@ public class ClientUI {
 	
 	public static class UI{
 		//主窗口组件
+		
 		private JFrame frame;
-		private JButton signIn = new JButton("sign in");
+		Cursor cs=new Cursor(Cursor.HAND_CURSOR);
+		private Icon ic=new ImageIcon("G:\\Java_Files\\DarkestDictionary\\images\\log_in.png");
+//		private JButton signIn = new JButton("sign in");
+		private JLabel signIn = new JLabel(ic);
 		private JButton search = new JButton("search");
 		private JRadioButton rBaidu = new JRadioButton("Baidu");
 		private JRadioButton rBing = new JRadioButton("Bing");
@@ -27,6 +32,7 @@ public class ClientUI {
 		private JTextArea result = new JTextArea();
 		private JTextField searchContent = new JTextField(75);
 		//登陆子窗口组件
+
 		private JFrame signInFrame;
 		private JButton logIn = new JButton("log in");
 		private JButton signUp = new JButton("sign up");

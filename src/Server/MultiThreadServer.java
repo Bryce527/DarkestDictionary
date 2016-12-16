@@ -10,7 +10,8 @@ public class MultiThreadServer extends JFrame{
 	
 	private website.youdaodic youdaodic = new website.youdaodic();
 	private website.bingdic bingdic = new website.bingdic();
-	private website.baidudic baidudic = new website.baidudic();
+//	private website.baidudic baidudic = new website.baidudic();
+	private website.jinshandic jinshandic = new website.jinshandic();
 	
 	private DataBase.DataBase database = new DataBase.DataBase();
 
@@ -100,8 +101,8 @@ public class MultiThreadServer extends JFrame{
 	
 	public String look_up_words(String flag, String word) {
 		StringBuilder result = new StringBuilder();
-		if(flag.charAt(0) == '1') {		//baidudic
-			String temp = baidudic.lookup(word);
+		if(flag.charAt(0) == '1') {		//jinshandic
+			String temp = jinshandic.lookup(word);
 			result.append(temp);
 			result.append("@");
 		}
