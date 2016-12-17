@@ -21,7 +21,7 @@ public class ClientUI {
 		Cursor cs=new Cursor(Cursor.HAND_CURSOR);
 		private Icon ic=new ImageIcon("G:\\Java_Files\\DarkestDictionary\\images\\log_in.png");
 //		private JButton signIn = new JButton("sign in");
-		private JLabel signIn = new JLabel(ic);
+		private JButton signIn = new JButton(ic);
 		private JButton search = new JButton("search");
 		private JRadioButton rBaidu = new JRadioButton("Baidu");
 		private JRadioButton rBing = new JRadioButton("Bing");
@@ -50,6 +50,7 @@ public class ClientUI {
 		public UI(){
 			frame = null;
 		};
+		
 		private void initNet() throws IOException{
 			address = (int)(1025 + Math.random()*65535);
 			client = new Socket("localhost",1025);
