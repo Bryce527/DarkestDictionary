@@ -1,11 +1,16 @@
 package Client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+
+//import dhtnzb.ImagePanel;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class ClientUI {
@@ -73,10 +78,18 @@ public class ClientUI {
 		private JFrame sendWordFrame;
 		private JFrame wordCardFrame;
 		
-		private JButton nextWord = new JButton("next.png");
-		private JButton saveWord = new JButton("save.png");
+		private JLabel sendWord = new JLabel("word");
+		private JLabel sendAccount = new JLabel("account");
+		private JTextField cardInput = new JTextField(30);
+		private JTextField sendInput = new JTextField(30);
+		private JButton send = new JButton("发送");
+		private JButton sendGroup = new JButton("群发");
 		
-		private Vector<BufferedImage> wordImagines;
+		private JButton nextWord = new JButton(new ImageIcon("next.png"));
+		private JButton saveWord = new JButton(new ImageIcon("save.png"));
+		
+		private ArrayList<String> myWords = new ArrayList<String>();
+		private int index;
 		//初始化
 		public UI(){
 			frame = null;
@@ -356,17 +369,39 @@ public class ClientUI {
 			}
 		}
 		
-		private class sendWordListener implements ActionListener{
+		private class sendCardListener implements ActionListener{
+			/*private JLabel sendWord = new JLabel("word");
+			private JLabel sendAccount = new JLabel("account");
+			private JTextField cardInput = new JTextField(30);
+			private JTextField sendInput = new JTextField(30);
+			private JButton send = new JButton("发送");
+			private JButton sendGroup = new JButton("群发");*/
 			public void actionPerformed(ActionEvent e){
-				if(wordTemp.isEmpty());
-				else{
+				/*if(wordTemp.isEmpty());
+				else{*/
 					sendWordFrame = new JFrame("sendWord");
 					sendWordFrame.setLayout(new BorderLayout(5,10));
 					
+					JPanel p1 = new JPanel();
+					JPanel p2 = new JPanel();
+					JPanel p3 = new JPanel();
+					p1.add(sendWord);
+					p1.add(cardInput);
+					cardInput.setText("");
+					p2.add(sendAccount);
+					p2.add(sendInput);
+					sendInput.setText("");
+					p3.add(send);
+					p3.add(sendGroup);
+					sendWordFrame.add(p1, BorderLayout.NORTH);
+					sendWordFrame.add(p2, BorderLayout.CENTER);
+					sendWordFrame.add(p3, BorderLayout.SOUTH);
+					
+					sendWordFrame.setSize(500,300);
 					sendWordFrame.setLocationRelativeTo(null);
 					sendWordFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					sendWordFrame.setVisible(true);
-				}
+				//}
 			}
 		}
 		
@@ -375,12 +410,56 @@ public class ClientUI {
 				wordCardFrame = new JFrame("wordCard");
 				wordCardFrame.setLayout(new BorderLayout(5,10));
 				
-				JPanel p1 = new JPanel();
+				//JPanel p1 = new JPanel();
 				JPanel p2 = new JPanel();
+				
+				//p1.setBackground(Color.gray);
+				//p1.add(new ImagePanel("单词卡"));
 				
 				p2.setLayout(new BorderLayout(5,10));
 				p2.add(nextWord, BorderLayout.EAST);
 				p2.add(saveWord, BorderLayout.WEST);
+				
+				wordCardFrame.add(new ImagePanel("单词卡"),BorderLayout.CENTER);
+				wordCardFrame.add(p2, BorderLayout.SOUTH);
+				
+				myWords.add("abdc#jbkjb");
+				myWords.add("最后一张");
+				index = -1;
+				
+				wordCardFrame.setSize(500,500);
+				wordCardFrame.setLocationRelativeTo(null);
+				wordCardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				wordCardFrame.setVisible(true);
+			}
+		}
+		
+		private class nextWordListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				index++;
+				if(index < myWords.size()){
+					wordCardFrame.add(new ImagePanel(myWords.get(index)),BorderLayout.CENTER);
+				}
+				else{
+					wordCardFrame.add(new ImagePanel("最后一张"),BorderLayout.CENTER);
+				}
+				wordCardFrame.setVisible(true);
+			}
+		}
+		
+		private class saveWordListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				ImagePanel temp = new ImagePanel(myWords.get(index));
+				
+				String fileName = "test/" + "a.png";
+				File file = new File(fileName);
+				try {
+					System.out.println("succeed");
+					ImageIO.write(temp.getImage(), "png", file);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		
@@ -393,10 +472,14 @@ public class ClientUI {
 			upBaidu.addActionListener(new upBaiduListener());
 			upBing.addActionListener(new upBingListener());
 			upYoudao.addActionListener(new upYoudaoListener());
+			wordCard.addActionListener(new wordCardListener());
+			nextWord.addActionListener(new nextWordListener());
+			saveWord.addActionListener(new saveWordListener());
+			sendCard.addActionListener(new sendCardListener());
 			
 			try {
 				//initNet();
-				Socket socket = new Socket("223.104.147.167", 8000);
+				Socket socket = new Socket("localhost", 8000);
 				//Socket socket = new Socket("130.254.204.36", 8000);
 				//Socket socket = new Socket("drake.Armstrong.edu", 8000);
 				
@@ -471,15 +554,31 @@ public class ClientUI {
 
 class ImagePanel extends JPanel {  
 	  
-    private BufferedImage image;  
+    private BufferedImage imageThis;  
   
-    public ImagePanel(BufferedImage tempImagine) {   
-            image = tempImagine;   
+    public ImagePanel(String wordsInput) {  
+    	 int width = 400;   
+         int height = 300;
+         String[] printWord = wordsInput.split("#");
+         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+         Graphics2D g2 = (Graphics2D)image.getGraphics();
+         g2.setBackground(Color.WHITE);   
+         g2.clearRect(0, 0, width, height);
+         g2.setFont(new Font("隶书",Font.BOLD,20));
+         g2.setPaint(Color.BLACK);   
+         for(int i = 0;i < printWord.length;i++){
+         	g2.drawString(printWord[i], 5, 20*(i+1));
+         }
+         imageThis = image;
     }  
-  
+    
+    public BufferedImage getImage(){
+    	return imageThis;
+    }
+    
     @Override  
     public void paintComponent(Graphics g) {  
-        g.drawImage(image, 0, 0, null);   
+        g.drawImage(imageThis, 0, 0, null);   
     }  
   
 }
