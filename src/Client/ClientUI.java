@@ -52,6 +52,9 @@ public class ClientUI {
 		private JTextArea result = new JTextArea();
 		private JTextField searchContent = new JTextField(75);
 		//点赞
+		private boolean isJinshan = false;
+		private boolean isBing = false;
+		private boolean isYoudao = false;
 		private String wordTemp;
 		//登陆子窗口组件
 		boolean isExit = false; //isExit为true,用户为登陆状态
@@ -91,6 +94,11 @@ public class ClientUI {
 		
 		private ArrayList<String> myWords = new ArrayList<String>();
 		private int index = -1;
+		//显示在线用户
+		private JFrame usersFrame;
+		private JButton checkUsers = new JButton(new ImageIcon("friends.png"));
+		private JList userList = new JList();
+		private DefaultListModel users = new DefaultListModel();
 		//初始化
 		public UI(){
 			frame = null;
@@ -166,6 +174,7 @@ public class ClientUI {
 			showNum.setText("单词卡数量: " + myWords.size());
 			p8.add(showNum, BorderLayout.SOUTH);
 			p8.add(wordCard,BorderLayout.CENTER);
+			p8.add(checkUsers,BorderLayout.NORTH);
 			
 			p2.add(p3,BorderLayout.NORTH);
 			p2.add(p7,BorderLayout.CENTER);
@@ -190,9 +199,35 @@ public class ClientUI {
 		};
 		
 		//响应
+		
+		private class checkUsersListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				usersFrame = new JFrame("users online");
+				usersFrame.setLayout(new BorderLayout());
+				
+				JPanel p1 = new JPanel();
+				//users.addElement("abc");
+				userList.setModel(users);
+				p1.add(userList);
+				
+				usersFrame.add(userList,BorderLayout.CENTER);
+				
+				usersFrame.setSize(500, 500);
+				usersFrame.setLocationRelativeTo(null);
+				usersFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				usersFrame.setVisible(true);
+			}
+		}
+		
 		private class searchListener implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				String word = searchContent.getText();
+				if(!word.matches("[a-zA-Z ]+")){
+					JOptionPane.showMessageDialog(null, "wrong input");
+					return;
+				}
+				word = word.replace(" ", "%20");
+				//System.out.println(word);
 				String rTemp = "";
 				if(rBaidu.isSelected())
 					rTemp = rTemp + "1";
@@ -230,6 +265,9 @@ public class ClientUI {
 						upBaidu.setIcon(beforeUp);
 						upBing.setIcon(beforeUp);
 						upYoudao.setIcon(beforeUp);
+						isJinshan = false;
+						isBing = false;
+						isYoudao = false;
 						//result.setText(show.toString() + '\n');
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -498,6 +536,7 @@ public class ClientUI {
 				if(isExit == true){
 					String strAccount = sendInput.getText();
 					String strCard = cardInput.getText();
+					strCard = strCard.replaceAll(" ", "%20");
 					String strSend = "4@" + userName + "@" + strAccount + "@" + strCard;
 					if((!strAccount.isEmpty())&&(!strCard.isEmpty())){
 						try{
@@ -521,6 +560,7 @@ public class ClientUI {
 				if(isExit == true){
 					//String strAccount = sendInput.getText();
 					String strCard = cardInput.getText();
+					strCard = strCard.replaceAll(" ", "%20");
 					String strSend = "4@" + userName + "@" + "*" + "@" + strCard;
 					if(!strCard.isEmpty()){
 						try{
@@ -551,6 +591,7 @@ public class ClientUI {
 			send.addActionListener(new sendListener());
 			sendGroup.addActionListener(new sendGroupListener());
 			exitFrame.addActionListener(new exitFrameListener());
+			checkUsers.addActionListener(new checkUsersListener());
 			//wordCardFrame.addWindowListener(new cardFrameListener());
 			
 			try {
@@ -596,7 +637,7 @@ public class ClientUI {
 								signInFrame.dispatchEvent(new WindowEvent(signInFrame,WindowEvent.WINDOW_CLOSING));
 								
 								isExit = true;
-								userName = outputArray[4];
+								userName = outputArray[3];
 								signIn.setIcon(afterLogin);
 							}
 							else{
@@ -625,6 +666,11 @@ public class ClientUI {
 							myWords.add(outputArray[m]);
 						}
 						showNum.setText("数量: " + myWords.size());
+					}
+					else if(outputArray[0].equalsIgnoreCase("5")){
+						users.clear();
+						for(int m = 1;m < outputArray.length;m++)
+							users.addElement(outputArray[m]);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
