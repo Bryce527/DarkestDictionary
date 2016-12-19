@@ -20,7 +20,7 @@ public class ClientUI {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
 		UI ui = new UI();
 		ui.init();
 		ui.Event();
@@ -87,9 +87,10 @@ public class ClientUI {
 		
 		private JButton nextWord = new JButton(new ImageIcon("next.png"));
 		private JButton saveWord = new JButton(new ImageIcon("save.png"));
+		private JButton exitFrame = new JButton(new ImageIcon("exit.png"));
 		
 		private ArrayList<String> myWords = new ArrayList<String>();
-		private int index;
+		private int index = -1;
 		//初始化
 		public UI(){
 			frame = null;
@@ -101,6 +102,11 @@ public class ClientUI {
 			toServer = new DataOutputStream(client.getOutputStream());
 		}
 		public void init(){
+			//myWords.add("abdc#jbkjb");
+			//myWords.add("hvavbai");
+			//myWords.add("abiabdsab");
+			//myWords.add("aa#split 的实现直接调用的 matcher 类的 split 的方法。在使用String.split方法分隔字符串时，分隔符如果用到一些特殊字符，可能会得不到我们预期的结果。在正则表达式中有特殊的含义的字符，我们使用的时候必须进行转义");
+			
 			frame = new JFrame("DarkestDictionary");
 			frame.setLayout(new BorderLayout(5,10));
 			//frame.setLayout(null);
@@ -157,7 +163,7 @@ public class ClientUI {
 			
 			p8.setLayout(new BorderLayout(5,10));
 			p7.add(sendCard);
-			showNum.setText("单词卡数量: " + nPic.toString());
+			showNum.setText("单词卡数量: " + myWords.size());
 			p8.add(showNum, BorderLayout.SOUTH);
 			p8.add(wordCard,BorderLayout.CENTER);
 			
@@ -261,6 +267,7 @@ public class ClientUI {
 				}
 				else{
 					String strSend = "2@" + userName;
+					isExit = false;
 					try {
 						toServer.writeUTF(strSend);
 						toServer.flush();
@@ -280,15 +287,16 @@ public class ClientUI {
 				String strAccount = accountInput.getText();
 				String strPassword = passwordInput.getText();
 				String strSend = "0" + "@" + "0" + "@" + strAccount + "@" + strPassword;
-				
-				try {
-					toServer.writeUTF(strSend);
-					toServer.flush();
-					
-					//result.setText("Area received from the server is " + strOutput + '\n');
-				} catch (IOException e1) {
+				if((!strAccount.isEmpty())&&(!strPassword.isEmpty())){
+					try {
+						toServer.writeUTF(strSend);
+						toServer.flush();
+						
+						//result.setText("Area received from the server is " + strOutput + '\n');
+					} catch (IOException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+						e1.printStackTrace();
+					}	
 				}
 				//logInResult.compareTo("@suceed") == 0
 			}
@@ -299,15 +307,16 @@ public class ClientUI {
 				String strAccount = accountInput.getText();
 				String strPassword = passwordInput.getText();
 				String strSend = "0" + "@" + "1" + "@" + strAccount + "@" + strPassword;
-				
-				try {
-					toServer.writeUTF(strSend);
-					toServer.flush();
-					//signUpResult = fromServer.readUTF();
-					//result.setText("Area received from the server is " + strOutput + '\n');
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if((!strAccount.isEmpty())&&(!strPassword.isEmpty())){
+					try {
+						toServer.writeUTF(strSend);
+						toServer.flush();
+						//signUpResult = fromServer.readUTF();
+						//result.setText("Area received from the server is " + strOutput + '\n');
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		}
@@ -379,6 +388,7 @@ public class ClientUI {
 			public void actionPerformed(ActionEvent e){
 				/*if(wordTemp.isEmpty());
 				else{*/
+				if(isExit == true){
 					sendWordFrame = new JFrame("sendWord");
 					sendWordFrame.setLayout(new BorderLayout(5,10));
 					
@@ -401,7 +411,24 @@ public class ClientUI {
 					sendWordFrame.setLocationRelativeTo(null);
 					sendWordFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					sendWordFrame.setVisible(true);
+				}
 				//}
+			}
+		}
+		
+		private class exitFrameListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				if(index > -1){
+					for(int i = 0;i <= index;i++){
+						System.out.println(i);
+						myWords.remove(i);
+					}
+					showNum.setText("数量: " + myWords.size());
+				}
+				else{
+					showNum.setText("数量: 0");
+				}
+				wordCardFrame.dispatchEvent(new WindowEvent(wordCardFrame,WindowEvent.WINDOW_CLOSING));
 			}
 		}
 		
@@ -417,17 +444,16 @@ public class ClientUI {
 				//p1.add(new ImagePanel("单词卡"));
 				
 				p2.setLayout(new BorderLayout(5,10));
+				p2.add(exitFrame, BorderLayout.WEST);
 				p2.add(nextWord, BorderLayout.EAST);
-				p2.add(saveWord, BorderLayout.WEST);
+				p2.add(saveWord, BorderLayout.CENTER);
 				
-				wordCardFrame.add(new ImagePanel("单词卡"),BorderLayout.CENTER);
+				wordCardFrame.add(new ImagePanelAnother("单词卡"),BorderLayout.CENTER);
 				wordCardFrame.add(p2, BorderLayout.SOUTH);
 				
-				myWords.add("abdc#jbkjb");
-				myWords.add("最后一张");
 				index = -1;
 				
-				wordCardFrame.setSize(500,500);
+				wordCardFrame.setSize(665,820);
 				wordCardFrame.setLocationRelativeTo(null);
 				wordCardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				wordCardFrame.setVisible(true);
@@ -441,7 +467,8 @@ public class ClientUI {
 					wordCardFrame.add(new ImagePanel(myWords.get(index)),BorderLayout.CENTER);
 				}
 				else{
-					wordCardFrame.add(new ImagePanel("最后一张"),BorderLayout.CENTER);
+					wordCardFrame.add(new ImagePanelAnother("最后一张"),BorderLayout.CENTER);
+					index--;
 				}
 				wordCardFrame.setVisible(true);
 			}
@@ -449,9 +476,12 @@ public class ClientUI {
 		
 		private class saveWordListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
+				String temp1 = myWords.get(index);
+				String t[] = temp1.split("#");
+				String name = t[1];
 				ImagePanel temp = new ImagePanel(myWords.get(index));
 				
-				String fileName = "test/" + "a.png";
+				String fileName = "test/" + name + ".png";
 				File file = new File(fileName);
 				try {
 					System.out.println("succeed");
@@ -462,7 +492,49 @@ public class ClientUI {
 				}
 			}
 		}
+
+		private class sendListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				if(isExit == true){
+					String strAccount = sendInput.getText();
+					String strCard = cardInput.getText();
+					String strSend = "4@" + userName + "@" + strAccount + "@" + strCard;
+					if((!strAccount.isEmpty())&&(!strCard.isEmpty())){
+						try{
+							toServer.writeUTF(strSend);
+							toServer.flush();
+						}
+						catch (IOException e1){
+							e1.printStackTrace();
+						}
+					}
+				}
+				else{
+					
+				}
+				sendWordFrame.dispatchEvent(new WindowEvent(sendWordFrame,WindowEvent.WINDOW_CLOSING));
+			}
+		}
 		
+		private class sendGroupListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				if(isExit == true){
+					//String strAccount = sendInput.getText();
+					String strCard = cardInput.getText();
+					String strSend = "4@" + userName + "@" + "*" + "@" + strCard;
+					if(!strCard.isEmpty()){
+						try{
+							toServer.writeUTF(strSend);
+							toServer.flush();
+						}
+						catch (IOException e1){
+							e1.printStackTrace();
+						}
+					}
+				}
+				sendWordFrame.dispatchEvent(new WindowEvent(sendWordFrame,WindowEvent.WINDOW_CLOSING));
+			}
+		}
 		
 		private void Event(){
 			signIn.addActionListener(new signInListener());
@@ -476,10 +548,14 @@ public class ClientUI {
 			nextWord.addActionListener(new nextWordListener());
 			saveWord.addActionListener(new saveWordListener());
 			sendCard.addActionListener(new sendCardListener());
+			send.addActionListener(new sendListener());
+			sendGroup.addActionListener(new sendGroupListener());
+			exitFrame.addActionListener(new exitFrameListener());
+			//wordCardFrame.addWindowListener(new cardFrameListener());
 			
 			try {
 				//initNet();
-				Socket socket = new Socket("localhost", 8000);
+				Socket socket = new Socket("114.212.132.159", 8000);
 				//Socket socket = new Socket("130.254.204.36", 8000);
 				//Socket socket = new Socket("drake.Armstrong.edu", 8000);
 				
@@ -543,6 +619,13 @@ public class ClientUI {
 							}
 						}
 					}
+					else if(outputArray[0].equalsIgnoreCase("4")){
+						System.out.println(strOutput);
+						for(int m = 1;m < outputArray.length;m++){
+							myWords.add(outputArray[m]);
+						}
+						showNum.setText("数量: " + myWords.size());
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -556,20 +639,92 @@ class ImagePanel extends JPanel {
 	  
     private BufferedImage imageThis;  
   
-    public ImagePanel(String wordsInput) {  
-    	 int width = 400;   
-         int height = 300;
-         String[] printWord = wordsInput.split("#");
-         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-         Graphics2D g2 = (Graphics2D)image.getGraphics();
-         g2.setBackground(Color.WHITE);   
-         g2.clearRect(0, 0, width, height);
-         g2.setFont(new Font("隶书",Font.BOLD,20));
-         g2.setPaint(Color.BLACK);   
-         for(int i = 0;i < printWord.length;i++){
-         	g2.drawString(printWord[i], 5, 20*(i+1));
-         }
-         imageThis = image;
+    public ImagePanel(String wordsInput) {
+    	int id = (int)(1 + Math.random()*2);
+    	ImageIcon imgIcon = new ImageIcon("background" + id + ".png");
+    	Image img = imgIcon.getImage();
+    
+   		int width = img.getWidth(null);//400,300
+   		int height = img.getHeight(null);
+   		
+   		//System.out.println(width);
+   		//System.out.println(height);
+    	
+   		String[] printWord = wordsInput.split("#");
+   		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+   		Graphics g2 = (Graphics)image.getGraphics();
+    	//Graphics2D g2 = (Graphics2D)image.createGraphics();
+    	//g2.setBackground(Color.WHITE);
+   		g2.setColor(Color.BLACK);
+   		g2.drawImage(img,0,0,null);
+   		//g2.clearRect(0, 0, width, height);
+   		g2.setFont(new Font("隶书",Font.BOLD,20));
+    	//g2.setPaint(Color.BLACK);   
+   		g2.drawString("发送用户: " + printWord[0], 5, 20);
+   		g2.drawString("单词: " + printWord[1], 5, 40);
+   		int nLine = 0;
+   		int perLine = 30;
+   		for(int i = 2;i < printWord.length;i++){
+   			/*int k = printWord[i].length()/perLine;
+   			String[] temp = new String[k];
+   			for(int j = 0;j < k-1;j++){
+   				temp[j] = printWord[i].substring(j*perLine+1, (j+1)*perLine);
+   			}
+   			temp[k-1] = printWord[i].substring(k*perLine + 1, printWord[i].length());
+   			for(int j = 0;j < k;j++){
+   				System.out.println(temp[j]);
+   				g2.drawString(temp[j], 5, 20*(nLine+j+2));
+   			}
+   			nLine += k;*/
+   			g2.drawString(printWord[i], 5, 20*(i+1));
+   			/*for(int j = 0;j < printWord[i].length();j++){
+   				g2.drawString(new String(printWord[i][j]), 5*(1+j), i);
+   			}*/
+    	}
+   		imageThis = image;
+    }  
+    
+    public BufferedImage getImage(){
+    	return imageThis;
+    }
+    
+    @Override  
+    public void paintComponent(Graphics g) {  
+        g.drawImage(imageThis, 0, 0, null);   
+    }  
+  
+}
+
+class ImagePanelAnother extends JPanel {  
+	  
+    private BufferedImage imageThis;  
+  
+    public ImagePanelAnother(String wordsInput) {
+    	int id = (int)(1 + Math.random()*2);
+    	ImageIcon imgIcon = new ImageIcon("background" + id + ".png");
+    	Image img = imgIcon.getImage();
+    
+   		int width = img.getWidth(null);//400,300
+   		int height = img.getHeight(null);
+   		
+   		//System.out.println(width);
+   		//System.out.println(height);
+    	
+   		String[] printWord = wordsInput.split("#");
+   		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+   		Graphics g2 = (Graphics)image.getGraphics();
+    	//Graphics2D g2 = (Graphics2D)image.createGraphics();
+    	//g2.setBackground(Color.WHITE);
+   		g2.setColor(Color.BLUE);
+   		g2.drawImage(img,0,0,null);
+   		//g2.clearRect(0, 0, width, height);
+   		g2.setFont(new Font("隶书",Font.BOLD,40));
+    	//g2.setPaint(Color.BLACK);   
+   		g2.drawString(printWord[0], 220, 300);
+   		for(int i = 1;i < printWord.length;i++){
+   			g2.drawString(printWord[i], 5, 20*(i+5));
+    	}
+   		imageThis = image;
     }  
     
     public BufferedImage getImage(){
