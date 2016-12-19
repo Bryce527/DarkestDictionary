@@ -113,7 +113,7 @@ public class ClientUI {
 			//myWords.add("abdc#jbkjb");
 			//myWords.add("hvavbai");
 			//myWords.add("abiabdsab");
-			//myWords.add("aa#split 的实现直接调用的 matcher 类的 split 的方法。在使用String.split方法分隔字符串时，分隔符如果用到一些特殊字符，可能会得不到我们预期的结果。在正则表达式中有特殊的含义的字符，我们使用的时候必须进行转义");
+			//myWords.add("aa#split#的实现直接调用的 matcher 类的 split 的方法。在使用String.split方法分隔字符串时，分隔符如果用到一些特殊字符，可能会得不到我们预期的结果。在正则表达式中有特殊的含义的字符，我们使用的时候必须进行转义");
 			
 			frame = new JFrame("DarkestDictionary");
 			frame.setLayout(new BorderLayout(5,10));
@@ -695,6 +695,7 @@ class ImagePanel extends JPanel {
    		
    		//System.out.println(width);
    		//System.out.println(height);
+   		System.out.println(wordsInput);
     	
    		String[] printWord = wordsInput.split("#");
    		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -704,6 +705,8 @@ class ImagePanel extends JPanel {
    		g2.setColor(Color.BLACK);
    		g2.drawImage(img,0,0,null);
    		//g2.clearRect(0, 0, width, height);
+   		//Font font = new Font("隶书",Font.BOLD,20);
+   		
    		g2.setFont(new Font("隶书",Font.BOLD,20));
     	//g2.setPaint(Color.BLACK);   
    		g2.drawString("发送用户: " + printWord[0], 5, 20);
@@ -711,18 +714,23 @@ class ImagePanel extends JPanel {
    		int nLine = 0;
    		int perLine = 30;
    		for(int i = 2;i < printWord.length;i++){
-   			/*int k = printWord[i].length()/perLine;
-   			String[] temp = new String[k];
-   			for(int j = 0;j < k-1;j++){
-   				temp[j] = printWord[i].substring(j*perLine+1, (j+1)*perLine);
+   			int k = (printWord[i].length()/perLine)+1;
+   			//String[] temp = new String[k];
+   			String temp;
+   			for(int j = 0;j < k;j++){
+   				if(j == k-1)
+   					temp = printWord[i].substring(j*perLine, printWord[i].length()-1);
+   				else
+   					temp = printWord[i].substring(j*perLine, (j+1)*perLine);
+   				g2.drawString(temp, 5, 20*(nLine+j+3));
    			}
-   			temp[k-1] = printWord[i].substring(k*perLine + 1, printWord[i].length());
+   			/*temp[k-1] = printWord[i].substring(k*perLine, printWord[i].length());
    			for(int j = 0;j < k;j++){
    				System.out.println(temp[j]);
-   				g2.drawString(temp[j], 5, 20*(nLine+j+2));
-   			}
-   			nLine += k;*/
-   			g2.drawString(printWord[i], 5, 20*(i+1));
+   				g2.drawString(temp[j], 5, 20*(nLine+j+3));
+   			}*/
+   			nLine += k;
+   			//g2.drawString(printWord[i], 5, 20*(i+1));
    			/*for(int j = 0;j < printWord[i].length();j++){
    				g2.drawString(new String(printWord[i][j]), 5*(1+j), i);
    			}*/
