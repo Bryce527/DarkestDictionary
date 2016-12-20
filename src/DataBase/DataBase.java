@@ -6,27 +6,48 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import com.mysql.jdbc.PreparedStatement;
 
 public class DataBase {
 	private static Connection connection;
+	private static BasicDataSource bs = null;
 	
 	public DataBase() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			System.out.println("Driver loaded");
-			
-			//Establish a connection
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/users?characterEncoding=utf8&useSSL=true", "root", "123456");
-			System.out.println("Datbase connected");
-		}
-		catch(SQLException ex) {
-			System.out.println(ex);
-		}
-		catch(ClassNotFoundException ex) {
-			System.out.println(ex);
-		}
+			connection = getConnection();
+			System.out.println("Datbase connected!!!!");
 	}
+	
+	public static BasicDataSource getDataSource(){
+		if(bs == null) {
+			bs = new BasicDataSource();
+            bs.setDriverClassName("com.mysql.jdbc.Driver");  
+            bs.setUrl("jdbc:mysql://localhost/users?characterEncoding=utf8&useSSL=true");  
+            bs.setUsername("root");  
+            bs.setPassword("123456");
+            bs.setMaxTotal(100);//设置最大并发数  
+            bs.setInitialSize(10);//数据库初始化时，创建的连接个数  
+            bs.setMinIdle(5);//最小空闲连接数  
+            bs.setMaxIdle(100);//数据库最大连接数
+            bs.setMaxWaitMillis(1000 * 5);//设置最大等待时间
+		}
+		return bs;
+	}
+	
+    public static Connection getConnection() {  
+        Connection con=null;  
+        try {  
+            if(bs!=null){  
+                con=bs.getConnection();  
+            }else{  
+                con=getDataSource().getConnection();
+            }  
+        } catch (Exception e) {
+        	System.out.println("Error");
+        }  
+        return con;  
+    } 
 	
 	public String queryFromClient(String request) {
 		StringBuilder result = new StringBuilder();
@@ -53,12 +74,7 @@ public class DataBase {
 				e.printStackTrace();
 			}
 		}
-		else if(request.charAt(0) == '2') {		//查单词
-		//形如 2@word@111
-			
-		}
-		return result.toString();
-		
+		return result.toString();		
 	}
 	
 	private static String query_user_id_password(String id, String password) {

@@ -10,21 +10,16 @@ import java.util.regex.Pattern;
 public class jinshandic {
 	public static void main(String[] args) {
 		Scanner input =new Scanner(System.in);
-		System.out.println("Enter the word");
 		String word = input.nextLine();
 		String requestUrl = "http://www.iciba.com/" + word;
 		String web_data = httpRequest(requestUrl);
 		String meaning = MatchMeaning(web_data);
-		System.out.println(meaning);
-
 	}
 	
 	public String lookup(String word) {
-		System.out.println("Enter the word");
 		String requestUrl = "http://www.iciba.com/" + word;
 		String web_data = httpRequest(requestUrl);
 		String meaning = MatchMeaning(web_data);
-		System.out.println(meaning);
 		return meaning;
 	}
 
@@ -94,10 +89,7 @@ public class jinshandic {
             if (m1.find()) {
                 String means = m1.group();//所有解释，包含网页标签
                 Pattern getChinese = Pattern.compile("(?m)<span>(.*?)</span>"); //(?m)代表按行匹配
-//                Pattern getChinese = Pattern.compile("(.)"); //(?m)代表按行匹配
                 Matcher m2 = getChinese.matcher(means);
-
-                System.out.println("释义:");
                 while (m2.find()) {
                     result.append(m2.group(1)); 
                 }

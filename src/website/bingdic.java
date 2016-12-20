@@ -10,18 +10,13 @@ import java.util.regex.Pattern;
 public class bingdic {
 	public static void main(String[] args) {
 		Scanner input =new Scanner(System.in);
-		System.out.println("Enter the word");
 		String word = input.nextLine();
-//		String requestUrl = "http://cn.bing.com/dict/search?q=" + word + "&qs=n&form=Z9LH5&pq=and&sc=7-3&sp=-1&sk=&cvid=BED3FF15792F454BAC1FB47BA0311957";
-		String requestUrl = "http://cn.bing.com/dict/search?q=" + word + "&go=%E6%90%9C%E7%B4%A2&qs=bs&form=Z9LH5";
-		
+		String requestUrl = "http://cn.bing.com/dict/search?q=" + word + "&go=%E6%90%9C%E7%B4%A2&qs=bs&form=Z9LH5";		
 		String web_data = httpRequest(requestUrl);
 		String meaning = MatchMeaning(web_data);
-		System.out.println(meaning);
 	}
 	
 	public String lookup(String word) {
-		System.out.println("Enter the word");
 		String requestUrl = "http://cn.bing.com/dict/search?q=" + word + "&go=%E6%90%9C%E7%B4%A2&qs=bs&form=Z9LH5";
 		String web_data = httpRequest(requestUrl);
 		String meaning = MatchMeaning(web_data);
@@ -87,21 +82,14 @@ public class bingdic {
 	}
 	
 	private static String MatchMeaning(String web_data) {
-//		Pattern searchMeanPattern = Pattern.compile("(?s)<div class=\"trans-container\">.*?<ul>.*?</div>");
 		Pattern searchMeanPattern = Pattern.compile("(?m)content=\"必应词典为您提供(.*?)\" /><");
-//		System.out.println(searchMeanPattern);
         Matcher m1 = searchMeanPattern.matcher(web_data); //m1是获取包含翻译的整个<div>的
         StringBuilder result = new StringBuilder();
         try {
             if (m1.find()) {
                 String means = m1.group();//所有解释，包含网页标签
-               
-//                Pattern getChinese = Pattern.compile("释义，(.*)\""); //(?m)代表按行匹配
                 Pattern getChinese = Pattern.compile("，(.*)；"); //(?m)代表按行匹配
-
                 Matcher m2 = getChinese.matcher(means);
-
-                System.out.println("释义:");
                 while (m2.find()) {
                     result.append(m2.group(1)); 
                 }
